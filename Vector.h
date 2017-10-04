@@ -2,18 +2,18 @@
 // Isak Edo Vivancos - 682405
 //
 
-#ifndef INFORMATICAGRAFICA_VECTOR_H
-#define INFORMATICAGRAFICA_VECTOR_H
+#ifndef IG_2017_VECTOR_H
+#define IG_2017_VECTOR_H
 
 #include <cmath>
-#include "Punto.h"
+#include "Tupla.h"
 
-class Vector : public Punto {
+class Vector : public Tupla {
 
 public:
 
     //Constructor
-    Vector (float _x, float _y, float _z) : Punto(_x,_y,_z) {}
+    Vector (float _x, float _y, float _z) : Tupla(_x,_y,_z) {}
 
     //Operadores
     //Suma de vectores

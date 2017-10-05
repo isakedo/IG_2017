@@ -13,6 +13,7 @@ class Vector : public Tupla {
 public:
 
     //Constructor
+    Vector() {}
     Vector (float _x, float _y, float _z) : Tupla(_x,_y,_z) {}
 
     //Operadores

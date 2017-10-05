@@ -12,6 +12,7 @@ class Punto : public Tupla{
 public:
 
     //Constructor
+    Punto() {}
     Punto (float _x, float _y, float _z) : Tupla(_x,_y,_z) {}
 
     //Operadores

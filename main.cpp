@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Vector.h"
+#include "Punto_Superficie.h"
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
@@ -12,6 +12,7 @@ int main() {
     float v7 = v1.mod();
     float v8 = v1 * v2;
     Vector v9 = v1 % v2;
+    Punto_Superficie p1 = Punto_Superficie(Esfera(),0.0f,0.0f);
 
     return 0;
 }

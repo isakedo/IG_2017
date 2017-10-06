@@ -24,7 +24,7 @@ public:
         if(_inclinacion >= 0 && _inclinacion <= pi &&
                 _acimut >= -pi && _acimut <= pi) {
             esfera = _esfera; inclinacion = _inclinacion; acimut = _acimut;
-
+            
         }
     }
 

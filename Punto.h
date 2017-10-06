@@ -25,8 +25,8 @@ public:
 
     //Punto mas dirección
     Punto operator+ (const Vector& vec) {
-        Punto resultado = Punto (this->x + vec.x, this->y + vec.y,
-                                   this->z + vec.z);
+        Punto resultado = Punto (this->x + vec.getX(), this->y + vec.getY(),
+                                   this->z + vec.getZ());
         return resultado;
     }
 

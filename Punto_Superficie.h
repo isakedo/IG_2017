@@ -7,6 +7,7 @@
 
 
 #include "Esfera.h"
+#include "Cambio_Base.h"
 
 class Punto_Superficie {
 
@@ -16,6 +17,27 @@ private:
     Punto posicion = Punto();
     Vector normal = Vector(), latitud = Vector(), longitud = Vector();
 
+    void calcular_punto() {
+        Vector ref = esfera.getReferencia() - esfera.getCentro();
+        float mod = ref.mod(); // radio de la esfera
+
+        Vector aux_z = esfera.getAxis() / 2;
+        aux_z = aux_z / aux_z.mod(); // normalizar
+        Vector aux_y = aux_z % ref;
+        aux_y = aux_y / aux_y.mod(); // normalizar
+        Vector aux_x = aux_y % aux_z;
+        aux_x = aux_x / aux_x.mod(); // normalizar
+        Cambio_Base base_esfera = Cambio_Base (aux_x, aux_y, aux_z,
+                                               esfera.getCentro());
+        Punto test = Punto (mod * sinf(inclinacion) * sinf(acimut),
+              mod * sinf(inclinacion) * cosf(acimut), mod * cosf(inclinacion));
+        Punto test2 = base_esfera * test;
+    }
+
+    void calcular_coordenas() {
+        //
+    }
+
 public:
 
     //Constructor
@@ -24,7 +46,7 @@ public:
         if(_inclinacion >= 0 && _inclinacion <= pi &&
                 _acimut >= -pi && _acimut <= pi) {
             esfera = _esfera; inclinacion = _inclinacion; acimut = _acimut;
-            
+            calcular_punto();
         }
     }
 

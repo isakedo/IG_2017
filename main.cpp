@@ -2,17 +2,9 @@
 #include "Punto_Superficie.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
-    Vector v1 = Vector(1,5,0);
-    Vector v2 = Vector(-3,0,2);
-    Vector v3 = v1 + v2;
-    Vector v4 = v1 - v2;
-    Vector v5 = v1 * 3;
-    Vector v6 = v1 / 3;
-    float v7 = v1.mod();
-    float v8 = v1 * v2;
-    Vector v9 = v1 % v2;
-    Punto_Superficie p1 = Punto_Superficie(Esfera(),0.0f,0.0f);
+    std::cout << "Test: Esfera en el punto (1,1,1) con radio 1" << std::endl;
+    Esfera esfera = Esfera(Punto(1,1,1),Punto(2,1,1),Vector(0,0,2));
+    Punto_Superficie p2 = Punto_Superficie(esfera,M_PI/4,M_PI/4);
 
     return 0;
 }

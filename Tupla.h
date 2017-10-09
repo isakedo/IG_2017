@@ -8,13 +8,14 @@
 class Tupla {
 
 protected:
-    float x,y,z;
+    float x,y,z,bit;
 
 public:
 
     //Constructores
-    Tupla () : x(0), y(0), z(0) {}
-    Tupla (float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
+    Tupla () : x(0), y(0), z(0), bit(0) {}
+    Tupla (float _x, float _y, float _z, float _bit) : x(_x), y(_y),
+                                                       z(_z), bit(_bit) {}
 
     //Getters
     float getX() const {
@@ -27,6 +28,10 @@ public:
 
     float getZ() const {
         return z;
+    }
+
+    float getBit() const {
+        return bit;
     }
 
     //Setters

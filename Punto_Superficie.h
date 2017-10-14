@@ -13,11 +13,10 @@ class Punto_Superficie {
 
 private:
     Esfera esfera = Esfera();
-    float inclinacion, acimut;
     Punto posicion = Punto();
     Vector normal = Vector(), latitud = Vector(), longitud = Vector();
 
-    void calcular_punto() {
+    void calcular_punto(float inclinacion, float acimut) {
         Vector ref = esfera.getReferencia() - esfera.getCentro();
         float mod = ref.mod(); // radio de la esfera
 
@@ -27,36 +26,54 @@ private:
         aux_y = aux_y / aux_y.mod(); // normalizar
         Vector aux_x = aux_y % aux_z;
         aux_x = aux_x / aux_x.mod(); // normalizar
+        aux_z = aux_z * mod; aux_y = aux_y * mod; aux_x = aux_x * mod;
         Cambio_Base base_esfera = Cambio_Base (aux_x, aux_y, aux_z,
                                                esfera.getCentro());
-        Punto posicion_locales = Punto (mod * sinf(inclinacion) * cosf(acimut),
-        mod * sinf(inclinacion) * sinf(acimut), mod * cosf(inclinacion));
+        Punto posicion_locales = Punto (sinf(inclinacion) * cosf(acimut),
+         sinf(inclinacion) * sinf(acimut), cosf(inclinacion));
         posicion = base_esfera * posicion_locales;
     }
 
     void calcular_coordenas() {
         Vector aux = posicion - esfera.getCentro();
-        latitud = aux % esfera.getAxis();
+        latitud = esfera.getAxis() % aux;
         latitud = latitud / latitud.mod(); // normalizar
-        longitud = latitud % aux;
+        longitud = aux % latitud;
         longitud = longitud / longitud.mod(); // normalizar
-        normal = longitud % latitud;
+        normal = latitud % longitud;
         normal = normal / normal.mod(); // normalizar
     }
 
 public:
 
     //Constructor
-    Punto_Superficie(Esfera _esfera, float _inclinacion, float _acimut) {
+    Punto_Superficie() = default;
+    Punto_Superficie(Esfera _esfera, float inclinacion, float acimut) {
         auto pi = (float)M_PI;
-        if(_inclinacion > 0 && _inclinacion < pi &&
-                _acimut > -pi && _acimut <= pi) {
-            esfera = _esfera; inclinacion = _inclinacion; acimut = _acimut;
-            calcular_punto();
+        if(inclinacion > 0 && inclinacion < pi &&
+                acimut > -pi && acimut <= pi) {
+            esfera = _esfera;
+            calcular_punto(inclinacion, acimut);
             calcular_coordenas();
         }
     }
 
+    //Getters
+    const Punto &getPosicion() const {
+        return posicion;
+    }
+
+    const Vector &getNormal() const {
+        return normal;
+    }
+
+    const Vector &getLatitud() const {
+        return latitud;
+    }
+
+    const Vector &getLongitud() const {
+        return longitud;
+    }
 
 };
 

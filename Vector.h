@@ -66,4 +66,4 @@ public:
     }
 };
 
-#endif //INFORMATICAGRAFICA_VECTOR_H
+#endif //IG_2017_ESFERA_H

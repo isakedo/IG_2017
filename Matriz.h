@@ -1,5 +1,5 @@
 //
-// Isak Edo Vivancos -682405
+// Isak Edo Vivancos - 682405
 //
 
 #ifndef IG_2017_MATRIZ_H

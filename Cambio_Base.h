@@ -1,5 +1,5 @@
 //
-// Created by isak on 9/10/17.
+// Isak Edo Vivancos - 682405
 //
 
 #ifndef IG_2017_CAMBIO_BASE_H
@@ -12,6 +12,7 @@ class Cambio_Base : public Matriz{
 public:
 
     //Constructor
+    Cambio_Base() = default;
     Cambio_Base (Vector _eje_x, Vector _eje_y, Vector _eje_z, Punto _punto) :
         Matriz(_eje_x, _eje_y, _eje_z, _punto) {}
 
@@ -41,6 +42,5 @@ public:
     }
 
 };
-
 
 #endif //IG_2017_CAMBIO_BASE_H

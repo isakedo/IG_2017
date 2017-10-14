@@ -34,19 +34,6 @@ public:
         return bit;
     }
 
-    //Setters
-    void setX(float x) {
-        Tupla::x = x;
-    }
-
-    void setY(float y) {
-        Tupla::y = y;
-    }
-
-    void setZ(float z) {
-        Tupla::z = z;
-    }
-
 };
 
 

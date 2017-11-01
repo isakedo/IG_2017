@@ -1,5 +1,6 @@
 //
 // Isak Edo Vivancos - 682405
+// Geometría de la esfera con un centro, punto de referencia y un vector axis
 //
 
 #ifndef IG_2017_ESFERA_H

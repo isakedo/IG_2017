@@ -3,5 +3,5 @@ project(IG_2017)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCE_FILES main.cpp Punto.h Vector.h Tupla.h Esfera.h Punto_Superficie.h Matriz.h Cambio_Base.h Conexion.h Cambio_Base_Inversa.h)
+set(SOURCE_FILES main.cpp Geometria/Punto.h Geometria/Vector.h Geometria/Tupla.h Geometria/Esfera.h Geometria/Punto_Superficie.h Conexion.h Geometria/Cambio_Base_Inversa.h Camara.h Plano_proyeccion.h RGB.h Pixel.h Geometria/Matriz_transformacion.h)
 add_executable(IG_2017 ${SOURCE_FILES})

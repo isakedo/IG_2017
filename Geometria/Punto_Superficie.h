@@ -1,13 +1,15 @@
 //
 // Isak Edo Vivancos - 682405
+// Punto en la superficie de una esfera, se calcula dado la esfera y los angulos
+// acimut e inclinación. Dado este punto se calcula sus vectores de
+// coordenadas locales normalizadas. Se calcula en el constructor.
 //
 
 #ifndef IG_2017_PUNTO_SUPERFICIE_H
 #define IG_2017_PUNTO_SUPERFICIE_H
 
-
 #include "Esfera.h"
-#include "Cambio_Base.h"
+#include "Matriz_transformacion.h"
 
 class Punto_Superficie {
 
@@ -27,8 +29,8 @@ private:
         Vector aux_x = aux_y % aux_z;
         aux_x = aux_x / aux_x.mod(); // normalizar
         aux_z = aux_z * mod; aux_y = aux_y * mod; aux_x = aux_x * mod;
-        Cambio_Base base_esfera = Cambio_Base (aux_x, aux_y, aux_z,
-                                               esfera.getCentro());
+        Matriz_transformacion base_esfera = Matriz_transformacion (aux_x,
+                                             aux_y, aux_z, esfera.getCentro());
         Punto posicion_locales = Punto (sinf(inclinacion) * cosf(acimut),
          sinf(inclinacion) * sinf(acimut), cosf(inclinacion));
         posicion = base_esfera * posicion_locales;

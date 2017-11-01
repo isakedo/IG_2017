@@ -1,5 +1,7 @@
 //
 // Isak Edo Vivancos - 682405
+// Interfaz para vector geométrico con sus operaciones necesarios como
+// sobrecarga de sus operadores.
 //
 
 #ifndef IG_2017_VECTOR_H
@@ -14,7 +16,7 @@ public:
 
     //Constructor
     Vector() = default;
-    Vector (float _x, float _y, float _z) : Tupla(_x,_y,_z, 0) {}
+    Vector (float _x, float _y, float _z) : Tupla(_x,_y,_z) {}
 
     //Operadores
     //Suma de vectores
@@ -58,7 +60,7 @@ public:
 
     //Metodos
     //Modulo
-    float mod () {
+    float mod () const {
         float resultado = this->x * this->x + this->y * this->y +
                           this->z * this->z;
         resultado = sqrtf(resultado);

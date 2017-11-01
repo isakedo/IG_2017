@@ -1,14 +1,15 @@
 //
 // Isak Edo Vivancos - 682405
+// Matriz de transformación de cambio de base inversa, invierte en el
+// constructor teniendo en cuenta que son ortonormales los vectores
 //
 
 #ifndef IG_2017_CAMBIO_BASE_INVERSA_H
 #define IG_2017_CAMBIO_BASE_INVERSA_H
 
+#include "Matriz_transformacion.h"
 
-#include "Cambio_Base.h"
-
-class Cambio_Base_Inversa : public Cambio_Base {
+class Cambio_Base_Inversa : public Matriz_transformacion {
 
 public:
 

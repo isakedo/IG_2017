@@ -1,13 +1,19 @@
 #include <iostream>
-#include "Punto_Superficie.h"
-#include "Conexion.h"
+#include "Camara.h"
+#include "Plano_proyeccion.h"
+
+using namespace std;
+
+// Vectores de la camara explicitamente tienen que estar hacia la izquierda,
+// arriba y delante para la ceración del plano de proyección.
+const Vector camara_left = Vector(-540,0,0);
+const Vector camara_up = Vector(0,0,360);
+const Vector camara_forward = Vector(0,100,0);
+const Punto camara_posicion = Punto(0,0,0);
 
 int main() {
-    std::cout << "Test: Esfera en el punto (1,1,1) con radio 1" << std::endl;
-    Esfera esfera = Esfera(Punto(2,2,2),Punto(4,2,2),Vector(0,0,4));
-    Punto_Superficie origen = Punto_Superficie(esfera,M_PI/2,M_PI/2);
-    Esfera esfera2 = Esfera(Punto(8,8,8),Punto(6,8,8), Vector(0,0,4));
-    Punto_Superficie destino = Punto_Superficie(esfera2,M_PI/2,M_PI/2);
-    Conexion con = Conexion(origen,destino);
+    Camara cam = Camara(camara_left, camara_up, camara_forward,
+                        camara_posicion);
+    Plano_proyeccion plano = Plano_proyeccion(cam);
     return 0;
 }

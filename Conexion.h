@@ -1,18 +1,22 @@
 //
 // Isak Edo Vivancos - 682405
+// Conexión entre dos puntos en la superficie de dos esferas distintas, se
+// calcula la conexión desde las cordinadas locales de cada punto en el
+// constructor
 //
 
 #ifndef IG_2017_CONEXION_H
 #define IG_2017_CONEXION_H
 
-#include "Punto_Superficie.h"
-#include "Cambio_Base_Inversa.h"
+#include "Geometria/Punto_Superficie.h"
+#include "Geometria/Cambio_Base_Inversa.h"
 
 class Conexion {
 
 private:
-    Punto_Superficie origen, destino;
-    Vector con_origen, con_destino; // En sus respectivas coordenadas locales
+    Punto_Superficie origen = Punto_Superficie(), destino = Punto_Superficie();
+    Vector con_origen = Vector(), con_destino = Vector();
+    // En sus respectivas coordenadas locales
 
 public:
 

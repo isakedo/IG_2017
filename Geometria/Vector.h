@@ -4,11 +4,8 @@
 // sobrecarga de sus operadores.
 //
 
-#ifndef IG_2017_VECTOR_H
-#define IG_2017_VECTOR_H
-
+#pragma once
 #include <cmath>
-#include "Tupla.h"
 
 class Vector : public Tupla {
 
@@ -67,5 +64,3 @@ public:
         return resultado;
     }
 };
-
-#endif //IG_2017_ESFERA_H

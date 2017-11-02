@@ -4,46 +4,50 @@
 // se calcula el tamaño y posición con la camara.
 //
 
-#ifndef IG_2017_PLANO_PROYECCION_H
-#define IG_2017_PLANO_PROYECCION_H
+#pragma once
 
-#include <vector>
-#include "Pixel.h"
-#include "Camara.h"
-
-using namespace std;
+const __uint16_t  num_pixeles_ejex = 350;
+const __uint16_t  num_pixeles_ejey = 300;
 
 class Plano_proyeccion {
 
 private:
     //Matriz de pixeles
-    vector<vector<Pixel>> plano;
+    //Probar con la clase array
+    Pixel plano[num_pixeles_ejey][num_pixeles_ejex];
+    __uint16_t it_y = 0, it_x = 0;
 
 public:
 
     //Constructor
+    Plano_proyeccion() = default;
     Plano_proyeccion(Camara camara) {
-        __uint16_t num_pixeles_ejex = (__uint16_t) camara.getLeft().mod() * 2;
-        __uint16_t num_pixeles_ejey = (__uint16_t) camara.getUp().mod() * 2;
         Punto it = camara.getPosicion() + camara.getForward() +
                 camara.getUp() + camara.getLeft();
 
         float inicio_x = it.getX();
-        for (__uint16_t y = 0; y < num_pixeles_ejey; y++) {
-            vector<Pixel> aux_x;
-            for (__uint16_t x = 0; x < num_pixeles_ejex; x++) {
-                aux_x.push_back(Pixel(it));
+        for (auto y = 0; y < num_pixeles_ejey; y++) {
+            for (auto x = 0; x < num_pixeles_ejex; x++) {
+                plano[y][x] = Pixel(it);
                 it = Punto(it.getX() + 1, it.getY(), it.getZ());
             }
-            plano.push_back(aux_x);
             it = Punto(inicio_x, it.getY(), it.getZ() - 1);
         }
-        float example = -1;
-        float more = example * 2;
     }
 
+    //Iterador
+    void begin() { it_y = 0; it_x = 0; }
+    const Pixel &getPixel() const { return plano[it_y][it_x]; }
+    const RGB &getColor() const { return plano[it_y][it_x].getColor(); }
+    void setColor(const RGB &color) { plano[it_y][it_x].setColor(color); }
+    bool siguiente_x() {
+        it_x++;
+        return it_x == num_pixeles_ejex ? false : true;
+    }
+    bool siguiente_y() {
+        it_x = 0;
+        it_y++;
+        return it_y == num_pixeles_ejey ? false : true;
+    }
 
 };
-
-
-#endif //IG_2017_PLANO_PROYECCION_H

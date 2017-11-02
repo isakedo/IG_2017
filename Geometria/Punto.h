@@ -4,10 +4,7 @@
 // de sus operadores.
 //
 
-#ifndef IG_2017_PUNTO_H
-#define IG_2017_PUNTO_H
-
-#include "Vector.h"
+#pragma once
 
 class Punto : public Tupla{
 
@@ -47,5 +44,3 @@ public:
     }
 
 };
-
-#endif //IF_2017_PUNTO_H

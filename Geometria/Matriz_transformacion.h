@@ -7,10 +7,7 @@
 //  [ 0 0 0 1 ]
 //
 
-#ifndef IG_2017_MATRIZ_TRANSFORMACION_H
-#define IG_2017_MATRIZ_TRANSFORMACION_H
-
-#include "Punto.h"
+#pragma once
 
 class Matriz_transformacion {
 
@@ -52,6 +49,3 @@ public:
     }
 
 };
-
-
-#endif //IG_2017_MATRIZ_H

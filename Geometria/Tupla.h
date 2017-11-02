@@ -3,8 +3,7 @@
 // Tupla genérica de 3 valores en coma flotante de simple precisión
 //
 
-#ifndef IG_2017_TUPLA_H
-#define IG_2017_TUPLA_H
+#pragma once
 
 class Tupla {
 
@@ -30,6 +29,3 @@ public:
         return z;
     }
 };
-
-
-#endif //IG_2017_TUPLA_H

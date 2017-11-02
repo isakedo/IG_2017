@@ -3,11 +3,8 @@
 // Camara pinhole para capturar la imagen
 //
 
-#ifndef IG_2017_CAMARA_H
-#define IG_2017_CAMARA_H
+#pragma once
 
-#include "Geometria/Vector.h"
-#include "Geometria/Punto.h"
 
 class Camara {
 
@@ -18,6 +15,7 @@ private:
 public:
 
     //Constructor
+    Camara() = default;
     Camara(Vector _left, Vector _up, Vector _forward, Punto _posicion) :
             left(_left), up(_up), forward(_forward), posicion(_posicion) {}
 
@@ -40,6 +38,3 @@ public:
     //Faltará rotar la camara
 
 };
-
-
-#endif //IG_2017_CAMARA_H

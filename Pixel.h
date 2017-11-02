@@ -4,12 +4,7 @@
 // el color correspondiente
 //
 
-#ifndef IG_2017_PIXEL_H
-#define IG_2017_PIXEL_H
-
-
-#include "RGB.h"
-#include "Geometria/Punto.h"
+#pragma once
 
 class Pixel {
 
@@ -20,9 +15,19 @@ private:
 public:
 
     //Constructor
-    Pixel(Punto _posicion) : posicion(_posicion) {}
+    Pixel() = default;
+    explicit Pixel(Punto _posicion) : posicion(_posicion) {}
+
+    const RGB &getColor() const {
+        return color;
+    }
+
+    const Punto &getPosicion() const {
+        return posicion;
+    }
+
+    void setColor(const RGB &color) {
+        Pixel::color = color;
+    }
 
 };
-
-
-#endif //IG_2017_PIXEL_H

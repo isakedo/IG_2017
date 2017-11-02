@@ -3,18 +3,15 @@
 // Tupla de colores RGB con color rojo, verde y azul, entre 0 y 255
 //
 
-#ifndef IG_2017_RGB_H
-#define IG_2017_RGB_H
-
-
-#include "Geometria/Tupla.h"
+#pragma once
 
 class RGB : Tupla {
 
 public:
 
     //Constructor, por defecto
-    RGB() : Tupla(0,0,0) {}
+    RGB() : Tupla(255,0,0) {}
+    RGB(float rojo, float verde, float azul) : Tupla(rojo,verde,azul) {}
 
     //Getters
     float getR() const {
@@ -43,5 +40,3 @@ public:
     }
 
 };
-
-#endif //IG_2017_RGB_H

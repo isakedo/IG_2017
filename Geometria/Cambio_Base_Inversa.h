@@ -4,10 +4,7 @@
 // constructor teniendo en cuenta que son ortonormales los vectores
 //
 
-#ifndef IG_2017_CAMBIO_BASE_INVERSA_H
-#define IG_2017_CAMBIO_BASE_INVERSA_H
-
-#include "Matriz_transformacion.h"
+#pragma once
 
 class Cambio_Base_Inversa : public Matriz_transformacion {
 
@@ -34,6 +31,3 @@ public:
     }
 
 };
-
-
-#endif //IG_2017_CAMBIO_BASE_INVERSA_H

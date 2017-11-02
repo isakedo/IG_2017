@@ -5,11 +5,8 @@
 // coordenadas locales normalizadas. Se calcula en el constructor.
 //
 
-#ifndef IG_2017_PUNTO_SUPERFICIE_H
-#define IG_2017_PUNTO_SUPERFICIE_H
+#pragma once
 
-#include "Esfera.h"
-#include "Matriz_transformacion.h"
 
 class Punto_Superficie {
 
@@ -78,5 +75,3 @@ public:
     }
 
 };
-
-#endif //IG_2017_PUNTO_SUPERFICIE_H

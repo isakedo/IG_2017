@@ -5,11 +5,7 @@
 // constructor
 //
 
-#ifndef IG_2017_CONEXION_H
-#define IG_2017_CONEXION_H
-
-#include "Geometria/Punto_Superficie.h"
-#include "Geometria/Cambio_Base_Inversa.h"
+#pragma once
 
 class Conexion {
 
@@ -36,6 +32,3 @@ public:
     }
 
 };
-
-
-#endif //IG_2017_CONEXION_H

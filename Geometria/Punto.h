@@ -39,6 +39,13 @@ public:
         return resultado;
     }
 
+
+    //Punto por direccion
+    float operator * (const Vector& vec) const {
+        return this->x * vec.getX() + this->y * vec.getY() + this->z *
+                                                                     vec.getZ();
+    }
+
     float getBit() const {
         return bit;
     }

@@ -14,37 +14,48 @@ class Ray_tracing {
 
 private:
 
-    std::string path="/home/isak/CLionProjects/IG_2017/output.ppm";
-
+    std::string path;
+    float tmax;
     Camara camara = Camara();
     Plano_proyeccion plano = Plano_proyeccion();
     Malla_geometrias escena = Malla_geometrias();
+    ofstream fs;
 
-public:
-
-    Ray_tracing(Camara _camara, Plano_proyeccion _plano,
-                Malla_geometrias _escena) :
-            camara(_camara), plano(_plano), escena(_escena){}
-
-    void renderizar() {
-        cout << "Renderizar" << endl;
-    }
-
-    //Cambiar a plano
-    void guardar_imagen() {
-        ofstream fs;
-        fs.open(path);
+    //Guardar imagen
+    void cabecera() {
         fs << "P3" << endl << "# " << path << endl;
         fs << num_pixeles_ejex << " " << num_pixeles_ejey << endl;
         fs << "255" << endl;
+    }
+
+    void pintar_pixel(const RGB &color) {
+        fs << color.getR() << " " << color.getG() << " " << color.getB() << " ";
+    }
+
+public:
+
+    Ray_tracing(const Camara& _camara, const Plano_proyeccion& _plano,
+                const Malla_geometrias& _escena, const std::string& _path,
+            const float& _tmax) : camara(_camara), plano(_plano), escena(_escena)
+            , path(_path), tmax(_tmax){
+        fs.open(path);
+    }
+
+    void renderizar() {
+        cout << "Renderizar" << endl;
+        cabecera();
         plano.begin();
         do {
             do {
-                fs << plano.getColor().getR() << " " << plano.getColor().getG()
-                   << " " << plano.getColor().getB() << " ";
+                Punto pixel = plano.getPunto(); //Punto del plano
+                Vector rayo = pixel - camara.getPosicion(); //Rayo
+                rayo = rayo / rayo.mod();
+                RGB color = escena.interseccion(rayo,camara.getPosicion(),tmax);
+                pintar_pixel(color);
             } while (plano.siguiente_x());
             fs << endl;
         } while (plano.siguiente_y());
-
+        fs.close();
     }
+
 };

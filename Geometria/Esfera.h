@@ -5,7 +5,7 @@
 
 #pragma once
 
-class Esfera : Geometria {
+class Esfera : public Geometria {
 
 private:
     Punto centro = Punto(), referencia = Punto(); //Globales
@@ -15,8 +15,8 @@ public:
 
     //Constructor
     Esfera() = default;
-    Esfera (Punto _centro, Punto _referencia, Vector _axis, RGB _color) :
-            Geometria(_color) {
+    Esfera (const Punto& _centro, const Punto& _referencia, const Vector& _axis,
+            const RGB& _color) : Geometria(_color) {
         float radio_rc = (_referencia - _centro).mod();
         float radio_ax = _axis.mod() / 2;
         if((radio_ax - 0.000001) < radio_rc && (radio_ax + 0.000001) > radio_rc)
@@ -33,6 +33,33 @@ public:
 
     const Vector &getAxis() const {
         return axis;
+    }
+
+    float getRadio() const {
+        return axis.mod() / 2;
+    }
+
+    float interseccion(const Vector& dir, const Punto& origen) {
+        float t0, t1;
+
+        Vector L = origen - centro;
+        float a = dir * dir;
+        float b = dir * L * 2;
+        float c = L * L - getRadio() * getRadio();
+        if (!ecuacionCuadratica(a, b, c, t0, t1)) return -1;
+
+        if (t0 > t1) {
+            float aux = t0;
+            t0 = t1;
+            t1 = aux;
+        }
+
+        if (t0 < 0) {
+            t0 = t1;
+            if (t0 < 0) return -1;
+        }
+
+        return t0;
     }
 
 };

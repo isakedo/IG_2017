@@ -10,7 +10,7 @@ class RGB : Tupla {
 public:
 
     //Constructor, por defecto
-    RGB() : Tupla(255,0,0) {}
+    RGB() : Tupla(0,0,0) {}
     RGB(float rojo, float verde, float azul) : Tupla(rojo,verde,azul) {}
 
     //Getters

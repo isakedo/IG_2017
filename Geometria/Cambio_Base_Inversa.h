@@ -17,8 +17,8 @@ public:
      * inv(A) = [ inv(M) -inv(M)*b ]
      *          [  0         1     ]
      */
-    Cambio_Base_Inversa (Vector _eje_x, Vector _eje_y, Vector _eje_z,
-        Punto pun) {
+    Cambio_Base_Inversa (const Vector& _eje_x, const Vector& _eje_y,
+                         const Vector& _eje_z, const Punto& pun) {
         eje_x = Vector (_eje_x.getX(), _eje_y. getX(), _eje_z.getX());
         eje_y = Vector (_eje_x.getY(), _eje_y. getY(), _eje_z.getY());
         eje_z = Vector (_eje_x.getZ(), _eje_y. getZ(), _eje_z.getZ());

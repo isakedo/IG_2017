@@ -5,7 +5,6 @@
 
 #pragma once
 
-
 class Camara {
 
 private:
@@ -16,7 +15,8 @@ public:
 
     //Constructor
     Camara() = default;
-    Camara(Vector _left, Vector _up, Vector _forward, Punto _posicion) :
+    Camara(const Vector& _left, const Vector& _up, const Vector& _forward,
+           const Punto& _posicion) :
             left(_left), up(_up), forward(_forward), posicion(_posicion) {}
 
     const Vector &getUp() const {

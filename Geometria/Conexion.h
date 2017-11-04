@@ -17,7 +17,8 @@ private:
 public:
 
     //Constructor
-    Conexion (Punto_Superficie _origen, Punto_Superficie _destino) {
+    Conexion (const Punto_Superficie& _origen,
+              const Punto_Superficie& _destino) {
         origen = _origen;
         destino = _destino;
         Vector conexion_globales = destino.getPosicion() - origen.getPosicion();

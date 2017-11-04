@@ -20,8 +20,9 @@ public:
 
     //Constructor
     Matriz_transformacion() = default;
-    Matriz_transformacion (Vector _eje_x, Vector _eje_y, Vector _eje_z,
-    Punto _punto) : eje_x(_eje_x), eje_y(_eje_y), eje_z(_eje_z), punto(_punto){}
+    Matriz_transformacion (const Vector& _eje_x, const Vector& _eje_y,
+                           const Vector& _eje_z, const Punto& _punto) :
+            eje_x(_eje_x), eje_y(_eje_y), eje_z(_eje_z), punto(_punto){}
 
     //Operaciones
     //Matriz por vector cambio de base

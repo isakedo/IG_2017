@@ -7,7 +7,6 @@
 
 #pragma once
 
-
 class Punto_Superficie {
 
 private:

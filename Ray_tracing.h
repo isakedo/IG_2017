@@ -5,9 +5,6 @@
 
 #pragma once
 
-#include <fstream>
-#include <iostream>
-
 using namespace std;
 
 class Ray_tracing {

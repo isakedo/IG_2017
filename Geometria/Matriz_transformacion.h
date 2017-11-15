@@ -12,6 +12,7 @@
 class Matriz_transformacion {
 
 protected:
+
     //Vectores verticales columnas 1, 2 y 3
     Vector eje_x = Vector(), eje_y = Vector(), eje_z = Vector();
     Punto punto = Punto(); //Vectores verticales columna 4
@@ -46,6 +47,39 @@ public:
                 eje_z.getY() * pun.getZ() + punto.getY() * pun.getBit(),
                 eje_x.getZ() * pun.getX() + eje_y.getZ() * pun.getY() +
                 eje_z.getZ() * pun.getZ() + punto.getZ() * pun.getBit());
+        return resultado;
+    }
+
+    Matriz_transformacion operator* (const Matriz_transformacion& mat) const {
+        Matriz_transformacion resultado = Matriz_transformacion (
+            Vector(eje_x.getX() * mat.eje_x.getX() + eje_y.getX() *
+                   mat.eje_x.getY() + eje_z.getX() * mat.eje_x.getZ(),
+                   eje_x.getY() * mat.eje_x.getX() + eje_y.getY() *
+                   mat.eje_x.getY() + eje_z.getY() * mat.eje_x.getZ(),
+                   eje_x.getZ() * mat.eje_x.getX() + eje_y.getZ() *
+                   mat.eje_x.getY() + eje_z.getZ() * mat.eje_x.getZ()),
+            Vector(eje_x.getX() * mat.eje_y.getX() + eje_y.getX() *
+                   mat.eje_y.getY() + eje_z.getX() * mat.eje_y.getZ(),
+                   eje_x.getY() * mat.eje_y.getX() + eje_y.getY() *
+                   mat.eje_y.getY() + eje_z.getY() * mat.eje_y.getZ(),
+                   eje_x.getZ() * mat.eje_y.getX() + eje_y.getZ() *
+                   mat.eje_y.getY() + eje_z.getZ() * mat.eje_y.getZ()),
+            Vector(eje_x.getX() * mat.eje_z.getX() + eje_y.getX() *
+                   mat.eje_z.getY() + eje_z.getX() * mat.eje_z.getZ(),
+                   eje_x.getY() * mat.eje_z.getX() + eje_y.getY() *
+                   mat.eje_z.getY() + eje_z.getY() * mat.eje_z.getZ(),
+                   eje_x.getZ() * mat.eje_z.getX() + eje_y.getZ() *
+                   mat.eje_z.getY() + eje_z.getZ() * mat.eje_z.getZ()),
+            Punto(eje_x.getX() * mat.punto.getX() + eje_y.getX() *
+                  mat.punto.getY() + eje_z.getX() * mat.punto.getZ() +
+                  punto.getX(),
+                  eje_x.getY() * mat.punto.getX() + eje_y.getY() *
+                  mat.punto.getY() + eje_z.getY() * mat.punto.getZ() +
+                  punto.getY(),
+                  eje_x.getZ() * mat.punto.getX() + eje_y.getZ() *
+                  mat.punto.getY() + eje_z.getZ() * mat.punto.getZ() +
+                  punto.getZ())
+        );
         return resultado;
     }
 

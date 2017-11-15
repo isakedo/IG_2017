@@ -8,6 +8,7 @@
 class Tupla {
 
 protected:
+
     float x,y,z;
 
 public:

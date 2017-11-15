@@ -4,7 +4,7 @@
 // para evitar punteros y memoria dinámica.
 //
 
-const __uint8_t num_esferas = 1;
+const __uint8_t num_esferas = 0;
 const __uint8_t num_planos = 0;
 
 #pragma once
@@ -66,7 +66,7 @@ public:
             fe >> _num >> x >> y >> z;
             fe.getline(trash,64);
             triangulos.push_back(Triangulo(vertices[x],vertices[y],vertices[z],
-                                         RGB(163,228,215)));
+                                           RGB(163,228,215)));
         }
 
         fe.close();
@@ -109,7 +109,7 @@ public:
         return color_proximo;
     }
 
-    //Para escalar todos los triangulos de una figura
+    //Conversión de figuras completas hechas con triangulos
     void escalar_figura(float factor_x, float factor_y, float factor_z) {
         for(auto i = 0; i < num_triangulos; i++) {
             triangulos[i].escalar(factor_x,factor_y,factor_z);

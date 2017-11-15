@@ -1,6 +1,6 @@
 //
 // Isak Edo Vivancos - 682405
-// Geometría de la esfera con un centro, punto de referencia y un vector axis
+// Geometría del triangulo con tres vertices
 //
 
 #pragma once

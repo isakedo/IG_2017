@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <ctime>
 
 #include "Geometria/Tupla.h"
 #include "Geometria/Vector.h"
@@ -12,15 +13,13 @@
 #include "Geometria/Esfera.h"
 #include "Geometria/Triangulo.h"
 #include "Malla_geometrias.h"
-#include "Camara.h"
 #include "Plano_proyeccion.h"
+#include "Camara.h"
 #include "Ray_tracer.h"
 
 /*TODO:
     Jerarquía Bounding boxes
     Texturas
-    Paralelización OpenMP
-    Rotacion de camara
     Cambiar variables intersecciones
 */
 
@@ -29,19 +28,19 @@ int main() {
     //Configuracion de la escena
     //Archivo de guardado
     std::string path="/home/isak/CLionProjects/IG_2017/output.ppm";
-    std::string path_ply="/home/isak/CLionProjects/IG_2017/ply/galleon.ply";
+    std::string path_ply="/home/isak/CLionProjects/IG_2017/ply/cow.ply";
 
     // Vectores de la camara explicitamente tienen que estar hacia la izquierda,
     // arriba y delante para la ceración del plano de proyección.
     const Vector camara_left = Vector(-320,0,0);
     const Vector camara_up = Vector(0,0,240);
     const Vector camara_forward = Vector(0,90,0);
-    const Punto camara_pos = Punto(0,0,0);
+    const Punto camara_pos = Punto(0,-150,0);
     const float tmax = 1000;
 
     //Geometrias
-    Esfera _esferas[num_esferas] = {
-        Esfera(Punto(0,150,0),Punto(0,200,0),Vector(0,0,100),RGB(163,228,215))
+    const Esfera _esferas[num_esferas] = {
+        //Esfera(Punto(300,0,0),Punto(350,0,0),Vector(0,0,100),RGB(163,228,215))
     };
 
     const Plano _planos[num_planos] = {
@@ -54,14 +53,14 @@ int main() {
 
     //Preparacion del trazador de rayos
     Camara camara = Camara(camara_left, camara_up, camara_forward, camara_pos);
-    Plano_proyeccion plano = Plano_proyeccion(camara);
    //Aqui se puede rotar la camara y el plano
     Malla_geometrias malla = Malla_geometrias();
     malla.cargar_geometrias(_esferas,_planos);
-    //malla.cargar_triangulos_ply(path_ply);
-    //malla.rotar_z_figura((float)M_PI/2);
-    Ray_tracer ray = Ray_tracer(camara, plano, malla, path, tmax);
+    malla.cargar_triangulos_ply(path_ply);
+    malla.escalar_figura(20,20,20);
+    Ray_tracer ray = Ray_tracer(camara, malla, tmax);
     //Generacion de la imagen
     ray.renderizar();
+    ray.guardar_imagen(path);
     return 0;
 }

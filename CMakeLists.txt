@@ -5,5 +5,5 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
-set(SOURCE_FILES main.cpp Geometria/Punto.h Geometria/Vector.h Geometria/Tupla.h Geometria/Esfera.h Geometria/Punto_Superficie.h Geometria/Conexion.h Geometria/Cambio_Base_Inversa.h Camara.h Plano_proyeccion.h RGB.h Geometria/Matriz_transformacion.h Malla_geometrias.h Ray_tracing.h Geometria/Geometria.h Geometria/Plano.h Geometria/Triangulo.h)
+set(SOURCE_FILES main.cpp Geometria/Punto.h Geometria/Vector.h Geometria/Tupla.h Geometria/Esfera.h Geometria/Punto_Superficie.h Geometria/Conexion.h Geometria/Cambio_Base_Inversa.h Camara.h Plano_proyeccion.h RGB.h Geometria/Matriz_transformacion.h Malla_geometrias.h Geometria/Geometria.h Geometria/Plano.h Geometria/Triangulo.h Ray_tracer.h)
 add_executable(IG_2017 ${SOURCE_FILES})

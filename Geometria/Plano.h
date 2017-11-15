@@ -23,4 +23,10 @@ public:
         return -(origen * normal + distancia) / (dir * normal);
     }
 
+    void escalar(float factor_x, float factor_y, float factor_z) {}
+    void trasladar(float factor_x, float factor_y, float factor_z) {}
+    void rotar_x(float angulo) {}
+    void rotar_y(float angulo) {}
+    void rotar_z(float angulo) {}
+
 };

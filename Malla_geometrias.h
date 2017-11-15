@@ -4,7 +4,7 @@
 // para evitar punteros y memoria dinámica.
 //
 
-const __uint8_t num_esferas = 0;
+const __uint8_t num_esferas = 1;
 const __uint8_t num_planos = 0;
 
 #pragma once
@@ -107,6 +107,37 @@ public:
         }
 
         return color_proximo;
+    }
+
+    //Para escalar todos los triangulos de una figura
+    void escalar_figura(float factor_x, float factor_y, float factor_z) {
+        for(auto i = 0; i < num_triangulos; i++) {
+            triangulos[i].escalar(factor_x,factor_y,factor_z);
+        }
+    }
+
+    void trasladar_figura(float factor_x, float factor_y, float factor_z) {
+        for(auto i = 0; i < num_triangulos; i++) {
+            triangulos[i].trasladar(factor_x,factor_y,factor_z);
+        }
+    }
+
+    void rotar_x_figura(float angulo) {
+        for(auto i = 0; i < num_triangulos; i++) {
+            triangulos[i].rotar_x(angulo);
+        }
+    }
+
+    void rotar_y_figura(float angulo) {
+        for(auto i = 0; i < num_triangulos; i++) {
+            triangulos[i].rotar_y(angulo);
+        }
+    }
+
+    void rotar_z_figura(float angulo) {
+        for(auto i = 0; i < num_triangulos; i++) {
+            triangulos[i].rotar_z(angulo);
+        }
     }
 
 };

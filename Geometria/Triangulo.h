@@ -49,5 +49,49 @@ public:
             return -1;
     }
 
+    void escalar(float factor_x, float factor_y, float factor_z) {
+        Matriz_transformacion escalar = Matriz_transformacion(
+                Vector(factor_x,0,0),Vector(0,factor_y,0),Vector(0,0,factor_z),
+                Punto(0,0,0));
+        v1 = escalar * v1;
+        v2 = escalar * v2;
+        v3 = escalar * v3;
+    }
 
+    void trasladar(float factor_x, float factor_y, float factor_z) {
+        Matriz_transformacion trasladar = Matriz_transformacion(
+                Vector(1,0,0),Vector(0,1,0),Vector(0,0,1),
+                Punto(factor_x,factor_y,factor_z));
+        v1 = trasladar * v1;
+        v2 = trasladar * v2;
+        v3 = trasladar * v3;
+    }
+
+    void rotar_x(float angulo) {
+        Matriz_transformacion rotar = Matriz_transformacion(
+                Vector(1,0,0),Vector(0,cosf(angulo),sinf(angulo)),
+                Vector(0,-sinf(angulo),cosf(angulo)),Punto(0,0,0));
+        v1 = rotar * v1;
+        v2 = rotar * v2;
+        v3 = rotar * v3;
+    }
+
+    void rotar_y(float angulo) {
+        Matriz_transformacion rotar = Matriz_transformacion(
+                Vector(cosf(angulo),0,-sinf(angulo)),Vector(0,1,0),
+                Vector(sinf(angulo),0,cosf(angulo)),Punto(0,0,0));
+        v1 = rotar * v1;
+        v2 = rotar * v2;
+        v3 = rotar * v3;
+    }
+
+    void rotar_z(float angulo) {
+        Matriz_transformacion rotar = Matriz_transformacion(
+                Vector(cosf(angulo),sinf(angulo),0),
+                Vector(-sinf(angulo),cosf(angulo),0),Vector(0,0,1),
+                Punto(0,0,0));
+        v1 = rotar * v1;
+        v2 = rotar * v2;
+        v3 = rotar * v3;
+    }
 };

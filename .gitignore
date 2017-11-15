@@ -1,3 +1,7 @@
+# Otros
+*.ppm
+*.ply
+
 # Prerequisites
 *.d
 

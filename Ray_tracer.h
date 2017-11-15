@@ -5,9 +5,11 @@
 
 #pragma once
 
+#include <ctime>
+
 using namespace std;
 
-class Ray_tracing {
+class Ray_tracer {
 
 private:
 
@@ -29,26 +31,53 @@ private:
         fs << color.getR() << " " << color.getG() << " " << color.getB() << " ";
     }
 
+    void progreso(int porcentaje,int longitud, int time){
+        printf("\r[");
+        for(int i=0;i<longitud;i++){
+            if(porcentaje * longitud / 100 < i)
+                putchar('_');
+            else
+                putchar('#');
+        }
+        printf("] %d%% Completado %02d:%02d:%02d",porcentaje,time/3600,
+               time % 3600 / 60, time % 60);
+        fflush(stdout);
+    }
+
 public:
 
-    Ray_tracing(const Camara& _camara, const Plano_proyeccion& _plano,
-                const Malla_geometrias& _escena, const std::string& _path,
-            const float& _tmax) : camara(_camara), plano(_plano), escena(_escena)
+    Ray_tracer(const Camara& _camara, const Plano_proyeccion& _plano,
+               const Malla_geometrias& _escena, const std::string& _path,
+               const float& _tmax) : camara(_camara), plano(_plano), escena(_escena)
             , path(_path), tmax(_tmax){
         fs.open(path);
     }
 
     void renderizar() {
-        cout << "Renderizar" << endl;
+
+        float contador = 0;
+        clock_t inicio, timestamp;
+        inicio = clock();
+
+        cout << "Renderizando..." << endl << endl;
         cabecera();
         plano.begin();
         do {
             do {
+                //Ray tracing
                 Punto pixel = plano.getPunto(); //Punto del plano
                 Vector rayo = pixel - camara.getPosicion(); //Rayo
                 rayo = rayo / rayo.mod();
                 RGB color = escena.interseccion(rayo,camara.getPosicion(),tmax);
                 pintar_pixel(color);
+
+                //Progreso
+                contador++;
+                timestamp = clock();
+                double time = (double(timestamp-inicio)/CLOCKS_PER_SEC);
+                progreso((int)(contador * 100) /
+                         (num_pixeles_ejey * num_pixeles_ejex),50,(int)time);
+
             } while (plano.siguiente_x());
             fs << endl;
         } while (plano.siguiente_y());

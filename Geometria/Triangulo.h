@@ -29,6 +29,7 @@ public:
         lado2 = v3 - v1;
         h = dir % lado2;
         a = lado1 * h;
+        //Comprueba si el rayo es paralelo
         if (a > -error && a < error)
             return -1;
         f = 1/a;

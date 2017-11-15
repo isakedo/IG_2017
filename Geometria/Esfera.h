@@ -40,26 +40,20 @@ public:
     }
 
     float interseccion(const Vector& dir, const Punto& origen) {
-        float t0, t1;
+        float raiz1, raiz2;
 
         Vector L = origen - centro;
         float a = dir * dir; // Esto valdra 1 en el caso de la esfera
         float b = dir * L * 2;
         float c = L * L - getRadio() * getRadio();
-        if (!ecuacionCuadratica(a, b, c, t0, t1)) return -1;
+        //Si no intersecta se devuelve -1
+        if (!ecuacionCuadratica(a, b, c, raiz1, raiz2)) return -1;
 
-        if (t0 > t1) {
-            float aux = t0;
-            t0 = t1;
-            t1 = aux;
-        }
+        if (raiz1 < 0 && raiz2 < 0) return -1;
+        else if (raiz1 < 0) return raiz2;
+        else if (raiz2 < 0) return raiz1;
 
-        if (t0 < 0) {
-            t0 = t1;
-            if (t0 < 0) return -1;
-        }
-
-        return t0;
+        return raiz1 < raiz2 ? raiz1 : raiz2;
     }
 
     void escalar(float factor_x, float factor_y, float factor_z) {

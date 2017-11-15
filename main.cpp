@@ -20,7 +20,6 @@
 /*TODO:
     Jerarquía Bounding boxes
     Texturas
-    Cambiar variables intersecciones
 */
 
 int main() {
@@ -40,7 +39,7 @@ int main() {
 
     //Geometrias
     const Esfera _esferas[num_esferas] = {
-        //Esfera(Punto(300,0,0),Punto(350,0,0),Vector(0,0,100),RGB(163,228,215))
+        //Esfera(Punto(0,150,0),Punto(0,200,0),Vector(0,0,100),RGB(163,228,215))
     };
 
     const Plano _planos[num_planos] = {
@@ -57,7 +56,8 @@ int main() {
     Malla_geometrias malla = Malla_geometrias();
     malla.cargar_geometrias(_esferas,_planos);
     malla.cargar_triangulos_ply(path_ply);
-    malla.escalar_figura(20,20,20);
+    malla.escalar_figura(50,50,50);
+    malla.rotar_x_figura(M_PI/2);
     Ray_tracer ray = Ray_tracer(camara, malla, tmax);
     //Generacion de la imagen
     ray.renderizar();

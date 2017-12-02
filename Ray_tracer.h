@@ -11,6 +11,7 @@ class Ray_tracer {
 
 private:
 
+    __uint16_t num_pixeles_ejex, num_pixeles_ejey;
     float tmax;
     Camara camara = Camara();
     Malla_geometrias escena = Malla_geometrias();
@@ -32,7 +33,10 @@ public:
 
     Ray_tracer(const Camara& _camara, const Malla_geometrias& _escena,
                const float& _tmax) : camara(_camara), escena(_escena),
-                                     tmax(_tmax){}
+                                     tmax(_tmax){
+        num_pixeles_ejex = camara.getNum_pixeles_ejex();
+        num_pixeles_ejey = camara.getNum_pixeles_ejey();
+    }
 
     void renderizar() {
 
@@ -47,7 +51,7 @@ public:
                 //Ray tracing
                 Vector rayo = camara.getRayo(i,j);
                 rayo = rayo / rayo.mod();
-                RGB color = escena.interseccion(rayo,camara.getPosicion(),tmax);
+                RGB color = escena.inter_rayo(rayo,camara.getPosicion(),tmax);
                 camara.setColor(i,j,color);
             }
 

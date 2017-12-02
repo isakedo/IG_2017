@@ -9,6 +9,8 @@ class Camara {
 
 private:
 
+    int offset = 0;
+    __uint16_t num_pixeles_ejex, num_pixeles_ejey;
     Plano_proyeccion plano = Plano_proyeccion();
     Vector up = Vector(), left = Vector(), forward = Vector();
     Punto posicion = Punto(), inicio = Punto();
@@ -21,9 +23,13 @@ public:
     //Constructor
     Camara() = default;
     Camara(const Vector& _left, const Vector& _up, const Vector& _forward,
-           const Punto& _posicion) :
-            left(_left), up(_up), forward(_forward), posicion(_posicion) {
+           const Punto& _posicion, const __uint16_t& _num_pixeles_ejex,
+           const __uint16_t& _num_pixeles_ejey) :
+            left(_left), up(_up), forward(_forward), posicion(_posicion),
+            num_pixeles_ejex(_num_pixeles_ejex),
+            num_pixeles_ejey(_num_pixeles_ejey){
 
+        plano = Plano_proyeccion(num_pixeles_ejex,num_pixeles_ejey);
         inicio = _posicion + _forward + _up + _left;
         rotacion = Matriz_transformacion(Vector(1,0,0),Vector(0,1,0),
                                          Vector(0,0,1),Punto(0,0,0));
@@ -39,6 +45,14 @@ public:
         return posicion;
     }
 
+    __uint16_t getNum_pixeles_ejex() const {
+        return num_pixeles_ejex;
+    }
+
+    __uint16_t getNum_pixeles_ejey() const {
+        return num_pixeles_ejey;
+    }
+
     const Vector getRayo(const int& x, const int& y) const {
         Punto iter = Punto(inicio.getX() + x,inicio.getY(), inicio.getZ() - y);
         //Traslada al origen, rota y lo devuelve a su punto original
@@ -46,6 +60,27 @@ public:
         iter = rotacion * iter;
         iter = trasladar_posicion * iter;
         return iter - posicion;
+    }
+
+    const Vector getRayo_random(const int& x, const int& y) {
+        float rand1 = -0.5f + static_cast <float> (rand()) /
+                              ( static_cast <float> (RAND_MAX/(1)));
+        float rand2 = -0.5f + static_cast <float> (rand()) /
+                              ( static_cast <float> (RAND_MAX/(1)));
+        float rand3 = -0.5f + static_cast <float> (rand()) /
+                              ( static_cast <float> (RAND_MAX/(1)));
+        float offset_x = (offset % 5) * 0.25f - 0.5f;
+        float offset_y = (offset / 5) * 0.25f - 0.5f;
+        Punto iter = Punto(inicio.getX() + x,inicio.getY(), inicio.getZ() - y);
+        Punto random = Punto(iter.getX() + offset_x + rand1, iter.getY() + rand2,
+                             iter.getZ() + offset_y + rand3);
+        //Traslada al origen, rota y lo devuelve a su punto original
+        random = trasladar_origen * random;
+        random = rotacion * random;
+        random = trasladar_posicion * random;
+        offset += 1;
+        if(offset == 25) offset = 0;
+        return random - posicion;
     }
 
     const RGB &getColor(const int& x, const int& y) const {

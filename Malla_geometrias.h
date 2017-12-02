@@ -1,11 +1,7 @@
 //
 // Isak Edo Vivancos - 682405
-// Malla de geometria de la escena a dibujar. Se utilizan vectores estáticos
-// para evitar punteros y memoria dinámica.
+// Malla de geometria de la escena a dibujar.
 //
-
-const __uint8_t num_esferas = 0;
-const __uint8_t num_planos = 0;
 
 #pragma once
 
@@ -15,29 +11,28 @@ class Malla_geometrias {
 
 private:
 
-    int num_triangulos;
-
-    Esfera esferas[num_esferas];
-    Plano planos[num_planos];
+    vector<Esfera> esferas;
+    vector<Plano> planos;
     vector<Triangulo> triangulos;
+    Geometria *ultima_interseccion;
 
 public:
 
     //Constructor
     Malla_geometrias() = default;
 
-    void cargar_geometrias(const Esfera _esferas[], const Plano _planos[]) {
-        for(auto i = 0; i < num_esferas; i++)
-            esferas[i] = _esferas[i];
-        for(auto i = 0; i < num_planos; i++)
-            planos[i] = _planos[i];
+    void cargar_geometrias(vector<Esfera>& _esferas, vector<Plano> _planos,
+            vector<Triangulo> _triangulos) {
+        esferas = _esferas;
+        planos = _planos;
+        triangulos = _triangulos;
     }
 
     void cargar_triangulos_ply(const std::string& _path) {
 
         ifstream fe;
         char trash[64];
-        int num_vertices;
+        int num_vertices, num_triangulos;
         vector<Punto> vertices;
 
         fe.open(_path);
@@ -66,17 +61,17 @@ public:
             fe >> _num >> x >> y >> z;
             fe.getline(trash,64);
             triangulos.push_back(Triangulo(vertices[x],vertices[y],vertices[z],
-                                           RGB(163,228,215)));
+                                    RGB(163,228,215),BRDF_phong(RGB(),RGB(),0.3)));
         }
 
         fe.close();
     }
 
-    RGB interseccion(const Vector& dir, const Punto& origen, const float tmax){
+    RGB inter_rayo(const Vector& dir, const Punto& origen, const float tmax){
         float t_proximo = tmax;
         RGB color_proximo = RGB();
 
-        for(auto i = 0; i < num_esferas; i++) {
+        for(auto i = 0; i < esferas.size(); i++) {
             float t = esferas[i].interseccion(dir,origen);
             if(t > 0) {
                 if (t < t_proximo) {
@@ -86,7 +81,7 @@ public:
             }
         }
 
-        for(auto i = 0; i < num_planos; i++) {
+        for(auto i = 0; i < planos.size(); i++) {
             float t = planos[i].interseccion(dir,origen);
             if(t > 0) {
                 if (t < t_proximo) {
@@ -96,7 +91,7 @@ public:
             }
         }
 
-        for(auto i = 0; i < num_triangulos; i++) {
+        for(auto i = 0; i < triangulos.size(); i++) {
             float t = triangulos[i].interseccion(dir,origen);
             if(t > 0) {
                 if (t < t_proximo) {
@@ -109,33 +104,73 @@ public:
         return color_proximo;
     }
 
+    float inter_path(const Vector& dir, const Punto& origen, const float tmax){
+        float t_proximo = tmax;
+
+        for(auto i = 0; i < esferas.size(); i++) {
+            float t = esferas[i].interseccion(dir,origen);
+            if(t > 0) {
+                if (t < t_proximo) {
+                    ultima_interseccion = &esferas[i];
+                    t_proximo = t;
+                }
+            }
+        }
+
+        for(auto i = 0; i < planos.size(); i++) {
+            float t = planos[i].interseccion(dir,origen);
+            if(t > 0) {
+                if (t < t_proximo) {
+                    t_proximo = t;
+                    ultima_interseccion = &planos[i];
+                }
+            }
+        }
+
+        for(auto i = 0; i < triangulos.size(); i++) {
+            float t = triangulos[i].interseccion(dir,origen);
+            if(t > 0) {
+                if (t < t_proximo) {
+                    ultima_interseccion = &triangulos[i];
+                    t_proximo = t;
+                }
+            }
+        }
+
+        return t_proximo;
+    }
+
+    Geometria* geometria_intersectada() {
+        return ultima_interseccion;
+    }
+
     //Conversión de figuras completas hechas con triangulos
     void escalar_figura(float factor_x, float factor_y, float factor_z) {
-        for(auto i = 0; i < num_triangulos; i++) {
+        for(auto i = 0; i < triangulos.size(); i++) {
             triangulos[i].escalar(factor_x,factor_y,factor_z);
         }
     }
 
     void trasladar_figura(float factor_x, float factor_y, float factor_z) {
-        for(auto i = 0; i < num_triangulos; i++) {
+        for(auto i = 0; i < triangulos.size(); i++) {
             triangulos[i].trasladar(factor_x,factor_y,factor_z);
         }
     }
 
     void rotar_x_figura(float angulo) {
-        for(auto i = 0; i < num_triangulos; i++) {
+        for(auto i = 0; i < triangulos.size(); i++) {
             triangulos[i].rotar_x(angulo);
         }
     }
 
     void rotar_y_figura(float angulo) {
-        for(auto i = 0; i < num_triangulos; i++) {
+        for(auto i = 0; i < triangulos.size(); i++) {
             triangulos[i].rotar_y(angulo);
         }
     }
 
     void rotar_z_figura(float angulo) {
-        for(auto i = 0; i < num_triangulos; i++) {
+        for(auto i = 0; i < triangulos.size(); i++) {
             triangulos[i].rotar_z(angulo);
         }
     }

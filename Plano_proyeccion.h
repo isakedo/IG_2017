@@ -5,26 +5,33 @@
 
 #pragma once
 
-const __uint16_t  num_pixeles_ejex = 640;
-const __uint16_t  num_pixeles_ejey = 480;
-
 class Plano_proyeccion {
 
 private:
 
-    RGB pantalla[num_pixeles_ejex][num_pixeles_ejey];
+    vector<vector<RGB>> pantalla;
 
 public:
 
     //Constructor
     Plano_proyeccion() = default;
+    Plano_proyeccion(const __uint16_t& _num_pixeles_ejex,
+                     const __uint16_t& _num_pixeles_ejey) {
+        for(auto j = 0; j < _num_pixeles_ejey; j++) {
+            vector<RGB> aux;
+            for(auto i = 0; i < _num_pixeles_ejex; i++) {
+                aux.push_back(RGB());
+            }
+            pantalla.push_back(aux);
+        }
+    }
 
     const RGB &getColor(const int& x, const int& y) const {
-        return pantalla[x][y];
+        return pantalla[y][x];
     }
 
     void setColor(const int& x, const int& y, const RGB& color) {
-        pantalla[x][y] = color;
+        pantalla[y][x] = color;
     }
 
 };

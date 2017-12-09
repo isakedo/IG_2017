@@ -17,6 +17,8 @@ private:
     Matriz_transformacion rotacion = Matriz_transformacion(),
             trasladar_origen = Matriz_transformacion(),
             trasladar_posicion = Matriz_transformacion();
+    std::mt19937 mt;
+    std::uniform_real_distribution<float> dist;
 
 public:
 
@@ -24,10 +26,10 @@ public:
     Camara() = default;
     Camara(const Vector& _left, const Vector& _up, const Vector& _forward,
            const Punto& _posicion, const __uint16_t& _num_pixeles_ejex,
-           const __uint16_t& _num_pixeles_ejey) :
+           const __uint16_t& _num_pixeles_ejey, const std::mt19937 _mt) :
             left(_left), up(_up), forward(_forward), posicion(_posicion),
             num_pixeles_ejex(_num_pixeles_ejex),
-            num_pixeles_ejey(_num_pixeles_ejey){
+            num_pixeles_ejey(_num_pixeles_ejey), mt(_mt){
 
         plano = Plano_proyeccion(num_pixeles_ejex,num_pixeles_ejey);
         inicio = _posicion + _forward + _up + _left;
@@ -39,6 +41,7 @@ public:
         trasladar_posicion = Matriz_transformacion(
                 Vector(1,0,0),Vector(0,1,0),Vector(0,0,1),
                 Punto(posicion.getX(),posicion.getY(),posicion.getZ()));
+        dist = std::uniform_real_distribution<float>(-0.5f, 0.5f);
     }
 
     const Punto &getPosicion() const {
@@ -63,12 +66,9 @@ public:
     }
 
     const Vector getRayo_random(const int& x, const int& y) {
-        float rand1 = -0.5f + static_cast <float> (rand()) /
-                              ( static_cast <float> (RAND_MAX/(1)));
-        float rand2 = -0.5f + static_cast <float> (rand()) /
-                              ( static_cast <float> (RAND_MAX/(1)));
-        float rand3 = -0.5f + static_cast <float> (rand()) /
-                              ( static_cast <float> (RAND_MAX/(1)));
+        float rand1 = dist(mt);
+        float rand2 = dist(mt);
+        float rand3 = dist(mt);
         float offset_x = (offset % 5) * 0.25f - 0.5f;
         float offset_y = (offset / 5) * 0.25f - 0.5f;
         Punto iter = Punto(inicio.getX() + x,inicio.getY(), inicio.getZ() - y);

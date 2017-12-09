@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <ctime>
+#include <random>
 
 #include "Geometria/Tupla.h"
 #include "Geometria/Vector.h"
@@ -33,8 +34,17 @@ int main(int argc, char **argv) {
 
     //Configuracion de la escena
     //Archivo de guardado
-    std::string path = argv[4];
+    time_t t = time(0);
+    struct tm * now = localtime(&t);
+    char buffer[80];
+    strftime(buffer,sizeof(buffer),"_%d-%m-%Y_%I:%M:%S",now);
+    std::string time(buffer);
+    std::string path = argv[4] + time + ".ppm";
     std::string path_ply="/home/isak/CLionProjects/IG_2017/ply/cow.ply";
+
+    //Random
+    std::random_device rd;
+    std::mt19937 mt(rd());
 
     // Vectores de la camara explicitamente tienen que estar hacia la izquierda,
     // arriba y delante para la ceración del plano de proyección.
@@ -47,9 +57,9 @@ int main(int argc, char **argv) {
     //Geometrias
     vector<Esfera> _esferas = {
         Esfera(Punto(110,300,-140),Punto(110,400,-140),Vector(0,0,200),RGB(163,228,215),
-               BRDF_phong(RGB(.15,.015,.15),RGB(0.7,0.07,0.7),10)),
+               BRDF_phong(RGB(.15,.015,.15),RGB(0.7,0.07,0.7),50)),
         Esfera(Punto(-100,350,-140),Punto(-100,450,-140),Vector(0,0,200),RGB(163,228,0),
-               BRDF_phong(RGB(.15,.015,.15),RGB(0.7,0.07,0.7),10))
+               BRDF_phong(RGB(.15,.015,.15),RGB(0.7,0.07,0.7),50))
     };
 
     vector<Triangulo> _triangulos = {
@@ -68,20 +78,14 @@ int main(int argc, char **argv) {
 
     //Preparacion del trazador de rayos
     Camara camara = Camara(camara_left, camara_up, camara_forward, camara_pos,
-        num_pixeles_ejex,num_pixeles_ejey);
+        num_pixeles_ejex,num_pixeles_ejey,mt);
    //Aqui se puede rotar la camara y el plano
     Malla_geometrias malla = Malla_geometrias();
     malla.cargar_geometrias(_esferas,_planos,_triangulos);
-    //malla.cargar_triangulos_ply(path_ply);
-    //malla.escalar_figura(50,50,50);
-    //malla.rotar_x_figura(M_PI/2);
-    //Ray_tracer ray = Ray_tracer(camara, malla, tmax);
-    //Generacion de la imagen
-    //ray.renderizar();
-    //ray.guardar_imagen(path);
 
 
-    Path_tracer pth = Path_tracer(camara, malla, tmax, num_path_pixel);
+
+    Path_tracer pth = Path_tracer(camara, malla, tmax, num_path_pixel,mt);
     pth.renderizar();
     pth.guardar_imagen(path);
     return 0;

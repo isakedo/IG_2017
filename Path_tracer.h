@@ -15,6 +15,8 @@ private:
     float tmax;
     Camara camara = Camara();
     Malla_geometrias escena = Malla_geometrias();
+    std::mt19937 mt;
+    std::uniform_real_distribution<float> dist;
 
     void progreso(int porcentaje,int longitud, int time){
         printf("\r[");
@@ -43,11 +45,8 @@ private:
             return interseccion->getColor();
 
         //Generar número aleatorio para saber si es difusa o especular
-        float randnum = static_cast <float> (rand()) /
-                static_cast <float> (RAND_MAX);
-
-        float randnum2 = static_cast <float> (rand()) /
-                        static_cast <float> (RAND_MAX);
+        float randnum = dist(mt);
+        float randnum2 = dist(mt);
         float pKd = interseccion->getBRDF().getProb_Kd();
         float pKs = interseccion->getBRDF().getProb_Ks();
 
@@ -75,24 +74,29 @@ private:
         else if(randnum >= pKd && randnum < (pKd + pKs)) {
             BRDF_phong brdf = interseccion->getBRDF();
             Vector norm = interseccion->getNormal(inter);
-            Vector reflejo = dir - (norm * (dir * norm) * 2);
+            Vector inv_dir = dir * -1;
+            //Comprobar si la normal esta dentro o fuera
+            Vector reflejo = inv_dir - (norm * (inv_dir * norm) * 2);
+            if((norm * reflejo)<0)
+                reflejo = reflejo * -1;
             reflejo = reflejo / reflejo.mod();
-            float r2 = sqrtf(1-pow(randnum,2/(brdf.getBrillo()+1)));
-            float r2s = 1-pow(randnum,1/(brdf.getBrillo()+1));
             float inclinacion = brdf.getInclinacion_Esp(randnum);
             float acimut = brdf.getAcimut_Esp(randnum2);
-            Vector rebote = Vector(r2 * cosf(acimut),
-                                   r2 * sinf(acimut),
-                                   r2s);
+            Vector rebote = Vector(sinf(inclinacion) * cosf(acimut),
+                                   cosf(inclinacion) * sinf(acimut),
+                                   cosf(inclinacion));
             Matriz_transformacion base_geometria = interseccion->coordenadas_ref
-                    (inter,dir,reflejo);
+                    (inter,reflejo);
 
             rebote = base_geometria * rebote;
             rebote = rebote / rebote.mod();
 
+            if((reflejo*rebote)<0)
+                rebote = rebote * -1;
+
             RGB color_rebote = lanzar_rayo(rebote,inter,tmax);
 
-            float factor = brdf.getFactor_Ref(reflejo, norm);
+            float factor = brdf.getFactor_Ref(reflejo, norm, rebote);
             RGB resultado = RGB(color_rebote.getR() * factor *
                 brdf.getKs().getR(), color_rebote.getG() * factor *
                 brdf.getKs().getG(), color_rebote.getB() * factor *
@@ -104,13 +108,24 @@ private:
 
     }
 
+    int clamp(float color){
+        float resultado;
+        if(color<0) resultado=0;
+        else
+            if(color>1) resultado = 1;
+            else resultado = color;
+        return int(pow(resultado,1/2.2)*255+.5);
+    }
+
 public:
 
     Path_tracer(const Camara& _camara, const Malla_geometrias& _escena,
-               const float& _tmax, const __uint16_t & _num_path) : camara(_camara),
-               escena(_escena), tmax(_tmax), num_path(_num_path) {
+               const float& _tmax, const __uint16_t & _num_path,
+                std::mt19937 _mt) : camara(_camara), escena(_escena),
+                tmax(_tmax), num_path(_num_path), mt(_mt) {
         num_pixeles_ejex = camara.getNum_pixeles_ejex();
         num_pixeles_ejey = camara.getNum_pixeles_ejey();
+        dist = std::uniform_real_distribution<float>(0, 1.0f);
     }
 
     void renderizar() {
@@ -127,7 +142,6 @@ public:
             //#pragma omp parallel for num_threads(4) schedule(dynamic) private(colores_path,color)
             for(auto i = 0; i < num_pixeles_ejex; i++) {
 
-                srand(time(NULL));
                 colores_path = vector<RGB>();
                 for (auto k = 0; k < num_path; k++) {
                     //Path tracing
@@ -171,8 +185,9 @@ public:
         for(auto j = 0; j < num_pixeles_ejey; j++) {
             for (auto i = 0; i < num_pixeles_ejex; i++) {
                 RGB color = camara.getColor(i, j);
-                fs << (int)color.getR() << " " << (int)color.getG() << " "
-                   << (int)color.getB() << " ";
+                fs << clamp(color.getR()/(float)255) << " "
+                   << clamp(color.getG()/(float)255) << " "
+                   << clamp(color.getB()/(float)255) << " ";
             }
             fs << endl;
         }

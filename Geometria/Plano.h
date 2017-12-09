@@ -35,7 +35,7 @@ public:
     }
 
     Matriz_transformacion coordenadas_ref(const Punto& inter,
-                                  const Vector& rayo, const Vector& reflejo) {}
+                                  const Vector& reflejo) {}
 
     Vector getNormal(const Punto& inter) { return normal; }
     void escalar(float factor_x, float factor_y, float factor_z) {}

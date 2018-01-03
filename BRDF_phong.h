@@ -65,11 +65,12 @@ public:
         return 2 * (float)M_PI * rand;
     }
 
+
     float getFactor_Ref(const Vector& reflejo, const Vector& norm,
                         const Vector& rebote) {
         float cos_inclin_i = norm * rebote;
         float sin_inclin_i = sqrtf(1-powf(cos_inclin_i,2));
-        float cos_inclin_r = norm * reflejo;
+        float cos_inclin_r = rebote * reflejo;
         float sin_inclin_r = sqrtf(1-powf(cos_inclin_r,2));
         float factor_num = (brillo + 2) * fabsf(cos_inclin_i)
                            * fabsf(sin_inclin_i);

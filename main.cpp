@@ -10,6 +10,7 @@
 #include "Geometria/Matriz_transformacion.h"
 #include "RGB.h"
 #include "BRDF_phong.h"
+#include "Luz.h"
 #include "Geometria/Geometria.h"
 #include "Geometria/Plano.h"
 #include "Geometria/Esfera.h"
@@ -40,7 +41,7 @@ int main(int argc, char **argv) {
     strftime(buffer,sizeof(buffer),"_%d-%m-%Y_%I:%M:%S",now);
     std::string time(buffer);
     std::string path = argv[4] + time + ".ppm";
-    std::string path_ply="/home/isak/CLionProjects/IG_2017/ply/cow.ply";
+    std::string path_ply="/home/isak/CLionProjects/IG_2017/ply/ketchup.ply";
 
     //Random
     std::random_device rd;
@@ -48,32 +49,38 @@ int main(int argc, char **argv) {
 
     // Vectores de la camara explicitamente tienen que estar hacia la izquierda,
     // arriba y delante para la ceración del plano de proyección.
-    const Vector camara_left = Vector(-320,0,0);
-    const Vector camara_up = Vector(0,0,240);
-    const Vector camara_forward = Vector(0,200,0);
+    const Vector camara_left = Vector(-32,0,0);
+    const Vector camara_up = Vector(0,0,24);
+    const Vector camara_forward = Vector(0,20,0);
     const Punto camara_pos = Punto(0,0,0);
-    const float tmax = 1000;
+    const float tmax = 200;
 
     //Geometrias
     vector<Esfera> _esferas = {
-        Esfera(Punto(110,300,-140),Punto(110,400,-140),Vector(0,0,200),RGB(163,228,215),
-               BRDF_phong(RGB(.15,.015,.15),RGB(0.7,0.07,0.7),50)),
-        Esfera(Punto(-100,350,-140),Punto(-100,450,-140),Vector(0,0,200),RGB(163,228,0),
-               BRDF_phong(RGB(.15,.015,.15),RGB(0.7,0.07,0.7),50))
+    //    Esfera(Punto(11,40,-14),Punto(11,50,-14),Vector(0,0,20),RGB(163,228,215),
+    //           BRDF_phong(RGB(.15,.015,.15),RGB(0.7,0.07,0.7),5)),
+    //    Esfera(Punto(-10,45,-14),Punto(-10,55,-14),Vector(0,0,20),RGB(163,228,0),
+    //           BRDF_phong(RGB(.15,.015,.15),RGB(0.7,0.07,0.7),5)),
+        Esfera(Punto(0,0,0),Punto(0,150,0),Vector(0,0,300),RGB(163,228,215),
+            BRDF_phong(),true)
     };
 
     vector<Triangulo> _triangulos = {
-    //    Triangulo(Punto(-200,220,239),Punto(200,220,239),Punto(-200,340,239),RGB(255,255,255),BRDF_phong(),true),
-    //    Triangulo(Punto(200,340,239),Punto(200,220,239),Punto(-200,340,239),RGB(255,255,255),BRDF_phong(),true)
+    //    Triangulo(Punto(-20,22,23.9),Punto(20,22,23.9),Punto(-20,34,23.9),RGB(255,255,255),BRDF_phong(),true),
+    //    Triangulo(Punto(20,34,23.9),Punto(20,22,23.9),Punto(-20,34,23.9),RGB(255,255,255),BRDF_phong(),true)
     };
 
     vector<Plano> _planos = {
-        Plano(320,Vector(1,0,0),RGB(255,51,51),BRDF_phong(RGB(.85,.085,.085),RGB(),0)),
-        Plano(320,Vector(-1,0,0),RGB(128,255,0),BRDF_phong(RGB(.085,.85,.085),RGB(),0)),
-        Plano(240,Vector(0,0,-1),RGB(255,255,255),BRDF_phong(RGB(.85,.85,.85),RGB(),0),true),
-        Plano(240,Vector(0,0,1),RGB(220,220,220),BRDF_phong(RGB(.85,.85,.85),RGB(),0)),
-        Plano(400,Vector(0,-1,0),RGB(220,220,220),BRDF_phong(RGB(.85,.85,.85),RGB(),0)),
-        Plano(5,Vector(0,1,0),RGB(220,220,200),BRDF_phong(RGB(.85,.85,.85),RGB(),0))
+    //    Plano(32,Vector(1,0,0),RGB(255,51,51),BRDF_phong(RGB(.85,.085,.085),RGB(),0)),
+    //    Plano(32,Vector(-1,0,0),RGB(128,255,0),BRDF_phong(RGB(.085,.85,.085),RGB(),0)),
+    //    Plano(24,Vector(0,0,-1),RGB(255,255,255),BRDF_phong(RGB(.85,.85,.85),RGB(),0)),
+        Plano(24,Vector(0,0,1),RGB(15,15,15),BRDF_phong(RGB(.85,.85,.85),RGB(),0)),
+    //    Plano(50,Vector(0,-1,0),RGB(220,220,220),BRDF_phong(RGB(.85,.85,.85),RGB(),0)),
+    //    Plano(5,Vector(0,1,0),RGB(220,220,220),BRDF_phong(RGB(.85,.85,.85),RGB(),0))
+    };
+
+    vector<Luz> _luz = {
+    //        Luz(Punto(0,30,20),RGB(2000,2000,2000))
     };
 
     //Preparacion del trazador de rayos
@@ -82,10 +89,11 @@ int main(int argc, char **argv) {
    //Aqui se puede rotar la camara y el plano
     Malla_geometrias malla = Malla_geometrias();
     malla.cargar_geometrias(_esferas,_planos,_triangulos);
+    malla.cargar_triangulos_ply(path_ply,RGB(),BRDF_phong(RGB(.7,.07,.7), RGB(),
+                                                          0));
+    malla.trasladar_figura(0,15,-5);
 
-
-
-    Path_tracer pth = Path_tracer(camara, malla, tmax, num_path_pixel,mt);
+    Path_tracer pth = Path_tracer(camara, malla,_luz,tmax, num_path_pixel,mt);
     pth.renderizar();
     pth.guardar_imagen(path);
     return 0;

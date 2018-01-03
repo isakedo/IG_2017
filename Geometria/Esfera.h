@@ -57,34 +57,8 @@ public:
         return raiz1 < raiz2 ? raiz1 : raiz2;
     }
 
-    Matriz_transformacion coordenadas_cos(const Punto& inter) {
-        /*Vector normal = inter - centro;
-        float radio = axis.mod() / 2;
-        float theta = asinf(normal.getY() / radio);
-        float phi = atan2f(normal.getZ(), normal.getX());
-        Vector delta = Vector(radio * cosf(theta) * cosf(phi),
-               radio * sinf(theta), radio * cosf(theta) * sinf(phi));
-        Vector tangente_u = delta - normal;
-        tangente_u = tangente_u / tangente_u.mod();
-        normal = normal / normal.mod();
-        float aux = tangente_u * normal;
-        Vector tangente_v = normal % tangente_u;
-        tangente_v = tangente_v / tangente_v.mod();
-        Matriz_transformacion resultado = Matriz_transformacion (
-                tangente_u,tangente_v,normal,inter);
-        return resultado;*/
-        /*
-        Vector normal = inter - centro;
-        normal = normal / normal.mod();
-        Vector aux = fabs(normal.getX()) > 0.1 ? Vector(0,1,0) : Vector(1,0,0);
-        Vector tangente_u = normal % aux;
-        tangente_u = tangente_u / tangente_u.mod();
-        Vector tangente_v = normal % tangente_u;
-        tangente_v = tangente_v / tangente_v.mod();
-        Matriz_transformacion resultado = Matriz_transformacion (
-                tangente_u,tangente_v,normal,inter);
-        return resultado;*/
-
+    Matriz_transformacion coordenadas_cos(const Punto& inter,
+                                          const Vector& dir) {
         Vector tangente_u;
         Vector normal = inter - centro;
         normal = normal / normal.mod();
@@ -103,57 +77,25 @@ public:
     }
 
     Matriz_transformacion coordenadas_ref(const Punto& inter,
-                                          const Vector& reflejo) {
-/*
-        Vector tangente_u;
-        if (reflejo.getX() != 0)
-            tangente_u = reflejo % Vector(0,0,1);
-        else
-            tangente_u = reflejo % Vector(1,0,0);
-        tangente_u = tangente_u / tangente_u.mod();
-        Vector tangente_v = tangente_u % reflejo;
-        tangente_v = tangente_v / tangente_v.mod();
-        return Matriz_transformacion(tangente_u,tangente_v,reflejo,inter);
-*/
-        /*
+                                  const Vector& reflejo, const Vector& dir) {
+
         Vector tangente_u;
         if(reflejo.getX() < reflejo.getY() && reflejo.getX() < reflejo.getZ())
-            tangente_u = Vector(0,0,1);
+            tangente_u = Vector(0,-reflejo.getZ(),reflejo.getY());
         else if (reflejo.getY() < reflejo.getX() && reflejo.getY() < reflejo.getZ())
-            tangente_u = Vector(1,0,0);
+            tangente_u = Vector(-reflejo.getZ(),0,reflejo.getX());
         else
-            tangente_u = Vector(0,1,0);
-        tangente_u = tangente_u / tangente_u.mod();
-        Vector tangente_v = reflejo % tangente_u;
-        tangente_v = tangente_v / tangente_v.mod();
-        Matriz_transformacion resultado = Matriz_transformacion (
-                tangente_u,tangente_v,reflejo,inter);
-        return resultado;*/
-/*
-        Vector aux = fabs(reflejo.getX()) > 0.1 ? Vector(0,1,0) : Vector(1,0,0);
-        Vector tangente_u = reflejo % aux;
-        tangente_u = tangente_u / tangente_u.mod();
-        Vector tangente_v = reflejo % tangente_u;
-        tangente_v = tangente_v / tangente_v.mod();
-        Matriz_transformacion resultado = Matriz_transformacion (
-                tangente_u,tangente_v,reflejo,inter);
-        return resultado;*/
-
-        float radio = axis.mod() / 2;
-        float theta = asinf(reflejo.getY() / radio);
-        float phi = atan2f(reflejo.getZ(), reflejo.getX());
-        Vector delta = Vector(radio * cosf(theta) * cosf(phi),
-                              radio * sinf(theta), radio * cosf(theta) * sinf(phi));
-        Vector tangente_u = delta - reflejo;
+            tangente_u = Vector(-reflejo.getY(),reflejo.getX(),0);
         tangente_u = tangente_u / tangente_u.mod();
         Vector tangente_v = reflejo % tangente_u;
         tangente_v = tangente_v / tangente_v.mod();
         Matriz_transformacion resultado = Matriz_transformacion (
                 tangente_u,tangente_v,reflejo,inter);
         return resultado;
+
     }
 
-    Vector getNormal(const Punto& inter) {
+    Vector getNormal(const Punto& inter, const Vector& dir) {
         Vector normal = inter - centro;
         normal = normal / normal.mod();
         return normal;

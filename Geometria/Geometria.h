@@ -48,10 +48,11 @@ public:
     }
 
     virtual float interseccion(const Vector& dir, const Punto& origen) = 0;
-    virtual Matriz_transformacion coordenadas_cos(const Punto& inter) = 0;
+    virtual Matriz_transformacion coordenadas_cos(const Punto& inter,
+        const Vector& dir) = 0;
     virtual Matriz_transformacion coordenadas_ref(const Punto& inter,
-                                             const Vector& reflejo) = 0;
-    virtual Vector getNormal(const Punto& inter) = 0;
+                                const Vector& reflejo, const Vector& dir) = 0;
+    virtual Vector getNormal(const Punto& inter, const Vector& dir) = 0;
 
     virtual void escalar(float factor_x, float factor_y, float factor_z) = 0;
     virtual void trasladar(float factor_x, float factor_y, float factor_z) = 0;

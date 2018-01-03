@@ -41,7 +41,7 @@ public:
         trasladar_posicion = Matriz_transformacion(
                 Vector(1,0,0),Vector(0,1,0),Vector(0,0,1),
                 Punto(posicion.getX(),posicion.getY(),posicion.getZ()));
-        dist = std::uniform_real_distribution<float>(-0.5f, 0.5f);
+        dist = std::uniform_real_distribution<float>(-0.05f, 0.05f);
     }
 
     const Punto &getPosicion() const {
@@ -68,12 +68,12 @@ public:
     const Vector getRayo_random(const int& x, const int& y) {
         float rand1 = dist(mt);
         float rand2 = dist(mt);
-        float rand3 = dist(mt);
-        float offset_x = (offset % 5) * 0.25f - 0.5f;
-        float offset_y = (offset / 5) * 0.25f - 0.5f;
-        Punto iter = Punto(inicio.getX() + x,inicio.getY(), inicio.getZ() - y);
-        Punto random = Punto(iter.getX() + offset_x + rand1, iter.getY() + rand2,
-                             iter.getZ() + offset_y + rand3);
+        float offset_x = (offset % 5) * 0.025f - 0.05f;
+        float offset_y = (offset / 5) * 0.025f - 0.05f;
+        Punto iter = Punto(inicio.getX() + x*0.1f,inicio.getY(),
+                           inicio.getZ() - y*0.1f);
+        Punto random = Punto(iter.getX() + offset_x + rand1, iter.getY(),
+                             iter.getZ() + offset_y + rand2);
         //Traslada al origen, rota y lo devuelve a su punto original
         random = trasladar_origen * random;
         random = rotacion * random;

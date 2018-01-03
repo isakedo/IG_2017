@@ -19,8 +19,6 @@ public:
             const RGB& _color, const BRDF_phong& _brdf, bool _emisor = false) :
             v1(_v1), v2(_v2), v3(_v3), Geometria(_color,_brdf,_emisor) {}
 
-    //https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_
-    // intersection_algorithm
     float interseccion(const Vector& dir, const Punto& origen) {
 
         const float error = 0.0000001;
@@ -29,6 +27,7 @@ public:
         lado1 = v2 - v1;
         lado2 = v3 - v1;
         h = dir % lado2;
+        //if(h*dir < 0) h = h * 1;
         a = lado1 * h;
         //Comprueba si el rayo es paralelo
         if (a > -error && a < error)
@@ -51,14 +50,53 @@ public:
             return -1;
     }
 
-    Matriz_transformacion coordenadas_cos(const Punto& inter) {
-        return Matriz_transformacion();
+    Matriz_transformacion coordenadas_cos(const Punto& inter,
+                                          const Vector& dir) {
+        Vector lado1, lado2, normal;
+        lado1 = v2 - v1;
+        lado2 = v3 - v1;
+        normal = dir % lado2;
+
+        Vector tangente_u;
+        normal = normal / normal.mod();
+        if(normal.getX() < normal.getY() && normal.getX() < normal.getZ())
+            tangente_u = Vector(0,-normal.getZ(),normal.getY());
+        else if (normal.getY() < normal.getX() && normal.getY() < normal.getZ())
+            tangente_u = Vector(-normal.getZ(),0,normal.getX());
+        else
+            tangente_u = Vector(-normal.getY(),normal.getX(),0);
+        tangente_u = tangente_u / tangente_u.mod();
+        Vector tangente_v = normal % tangente_u;
+        tangente_v = tangente_v / tangente_v.mod();
+        Matriz_transformacion resultado = Matriz_transformacion (
+                tangente_u,tangente_v,normal,inter);
+        return resultado;
     }
 
     Matriz_transformacion coordenadas_ref(const Punto& inter,
-                                   const Vector& reflejo) {}
+                                   const Vector& reflejo, const Vector& dir) {
+        Vector tangente_u;
+        if(reflejo.getX() < reflejo.getY() && reflejo.getX() < reflejo.getZ())
+            tangente_u = Vector(0,-reflejo.getZ(),reflejo.getY());
+        else if (reflejo.getY() < reflejo.getX() && reflejo.getY() < reflejo.getZ())
+            tangente_u = Vector(-reflejo.getZ(),0,reflejo.getX());
+        else
+            tangente_u = Vector(-reflejo.getY(),reflejo.getX(),0);
+        tangente_u = tangente_u / tangente_u.mod();
+        Vector tangente_v = reflejo % tangente_u;
+        tangente_v = tangente_v / tangente_v.mod();
+        Matriz_transformacion resultado = Matriz_transformacion (
+                tangente_u,tangente_v,reflejo,inter);
+        return resultado;
+    }
 
-    Vector getNormal(const Punto& inter) {}
+    Vector getNormal(const Punto& inter, const Vector& dir) {
+        Vector lado1, lado2, normal;
+        lado1 = v2 - v1;
+        lado2 = v3 - v1;
+        return dir % lado2;
+    }
+
     void escalar(float factor_x, float factor_y, float factor_z) {
         Matriz_transformacion escalar = Matriz_transformacion(
                 Vector(factor_x,0,0),Vector(0,factor_y,0),Vector(0,0,factor_z),

@@ -23,7 +23,8 @@ public:
         return -(origen * normal + distancia) / (dir * normal);
     }
 
-    Matriz_transformacion coordenadas_cos(const Punto& inter) {
+    Matriz_transformacion coordenadas_cos(const Punto& inter,
+                                          const Vector& dir) {
         Vector aux = fabs(normal.getX()) > 0.1 ? Vector(0,1,0) : Vector(1,0,0);
         Vector tangente_u = normal % aux;
         tangente_u = tangente_u / tangente_u.mod();
@@ -35,9 +36,9 @@ public:
     }
 
     Matriz_transformacion coordenadas_ref(const Punto& inter,
-                                  const Vector& reflejo) {}
+                                  const Vector& reflejo, const Vector& dir) {}
 
-    Vector getNormal(const Punto& inter) { return normal; }
+    Vector getNormal(const Punto& inter, const Vector& dir) { return normal; }
     void escalar(float factor_x, float factor_y, float factor_z) {}
     void trasladar(float factor_x, float factor_y, float factor_z) {}
     void rotar_x(float angulo) {}

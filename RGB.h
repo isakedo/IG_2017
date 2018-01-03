@@ -26,6 +26,30 @@ public:
         return z;
     }
 
+    RGB operator+ (const RGB& rgb) const {
+        RGB resultado = RGB (this->x + rgb.x, this->y + rgb.y,
+                                   this->z + rgb.z);
+        return resultado;
+    }
+
+    RGB operator* (const RGB& rgb) const {
+        RGB resultado = RGB (this->x * rgb.x, this->y * rgb.y,
+                             this->z * rgb.z);
+        return resultado;
+    }
+
+    RGB operator* (const float& val) const {
+        RGB resultado = RGB (this->x * val, this->y * val,
+                             this->z * val);
+        return resultado;
+    }
+
+    RGB operator/ (const float& val) const {
+        RGB resultado = RGB (this->x / val, this->y / val,
+                             this->z / val);
+        return resultado;
+    }
+
     //Setters
     void setR(float x) {
         Tupla::x = x;

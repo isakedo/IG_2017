@@ -15,6 +15,7 @@ private:
     float tmax;
     Camara camara = Camara();
     Malla_geometrias escena = Malla_geometrias();
+    vector<Luz> luz;
     std::mt19937 mt;
     std::uniform_real_distribution<float> dist;
 
@@ -50,43 +51,59 @@ private:
         float pKd = interseccion->getBRDF().getProb_Kd();
         float pKs = interseccion->getBRDF().getProb_Ks();
 
+        BRDF_phong brdf = interseccion->getBRDF();
+        Vector norm = interseccion->getNormal(inter,dir);
+        Vector inv_dir = dir * -1;
+
+        RGB directa = RGB();
+        for(auto puntual : luz) {
+            Vector dir_luz = puntual.getPosicion() - inter;
+            float distancia = dir_luz.mod();
+            dir_luz = dir_luz / distancia;
+            Vector reflejo_luz = (norm * (dir_luz * norm) * 2) - dir_luz;
+            float result = escena.inter_path(dir_luz,inter,tmax);
+
+            if(result > distancia) {
+
+                float factor_dif = max(norm * dir_luz,0.f);
+                float factor_esp = max(reflejo_luz * inv_dir,0.f);
+                float distancia_cuad = distancia * distancia;
+                RGB intensidad = puntual.getIntensidad() / distancia_cuad;
+
+                RGB difusa = intensidad * factor_dif;
+                RGB especular = intensidad * powf(factor_esp,brdf.getBrillo());
+                directa = directa + difusa + especular;
+
+            }
+        }
+
         //Ruleta rusa
         //Si se comporta como difuso
         if(randnum >= 0 && randnum < pKd) {
-            BRDF_phong brdf = interseccion->getBRDF();
             float r2 = sqrtf(randnum2);
             float acimut = brdf.getAcimut_Dif(randnum);
             Vector rebote = Vector(r2 * cosf(acimut),
               r2 * sinf(acimut), sqrtf(1-randnum2));
             Matriz_transformacion base_geometria = interseccion->coordenadas_cos
-                    (inter);
+                    (inter,dir);
             rebote = base_geometria * rebote;
             rebote = rebote / rebote.mod();
             RGB color_rebote = lanzar_rayo(rebote,inter,tmax);
             float factor = brdf.getFactor_Dif();
-            RGB resultado = RGB(color_rebote.getR() * factor *
-                brdf.getKd().getR(), color_rebote.getG() * factor *
-                brdf.getKd().getG(), color_rebote.getB() * factor *
-                brdf.getKd().getB());
-            return resultado;
+            RGB resultado = color_rebote * brdf.getKd() * factor;
+            return resultado + directa;
         }
         //Si se comporta como especular
         else if(randnum >= pKd && randnum < (pKd + pKs)) {
-            BRDF_phong brdf = interseccion->getBRDF();
-            Vector norm = interseccion->getNormal(inter);
-            Vector inv_dir = dir * -1;
-            //Comprobar si la normal esta dentro o fuera
-            Vector reflejo = inv_dir - (norm * (inv_dir * norm) * 2);
-            if((norm * reflejo)<0)
-                reflejo = reflejo * -1;
+            Vector reflejo = (norm * (inv_dir * norm) * 2) - inv_dir;
             reflejo = reflejo / reflejo.mod();
             float inclinacion = brdf.getInclinacion_Esp(randnum);
             float acimut = brdf.getAcimut_Esp(randnum2);
             Vector rebote = Vector(sinf(inclinacion) * cosf(acimut),
-                                   cosf(inclinacion) * sinf(acimut),
+                                   sinf(inclinacion) * sinf(acimut),
                                    cosf(inclinacion));
             Matriz_transformacion base_geometria = interseccion->coordenadas_ref
-                    (inter,reflejo);
+                    (inter,reflejo,dir);
 
             rebote = base_geometria * rebote;
             rebote = rebote / rebote.mod();
@@ -97,11 +114,9 @@ private:
             RGB color_rebote = lanzar_rayo(rebote,inter,tmax);
 
             float factor = brdf.getFactor_Ref(reflejo, norm, rebote);
-            RGB resultado = RGB(color_rebote.getR() * factor *
-                brdf.getKs().getR(), color_rebote.getG() * factor *
-                brdf.getKs().getG(), color_rebote.getB() * factor *
-                brdf.getKs().getB());
-            return resultado;
+            RGB resultado = color_rebote * brdf.getKs() * factor;
+
+            return resultado + directa;
         }
         //Si se absorbe
         else return RGB(0,0,0); //No hace nada
@@ -120,9 +135,10 @@ private:
 public:
 
     Path_tracer(const Camara& _camara, const Malla_geometrias& _escena,
-               const float& _tmax, const __uint16_t & _num_path,
-                std::mt19937 _mt) : camara(_camara), escena(_escena),
-                tmax(_tmax), num_path(_num_path), mt(_mt) {
+               vector<Luz> _luz, const float& _tmax,
+                const __uint16_t & _num_path, std::mt19937 _mt) :
+            camara(_camara), escena(_escena), tmax(_tmax), num_path(_num_path),
+            mt(_mt), luz(_luz) {
         num_pixeles_ejex = camara.getNum_pixeles_ejex();
         num_pixeles_ejey = camara.getNum_pixeles_ejey();
         dist = std::uniform_real_distribution<float>(0, 1.0f);
@@ -137,29 +153,19 @@ public:
         cout << "Renderizando..." << endl << endl;
         for(auto j = 0; j < num_pixeles_ejey; j++) {
 
-            vector<RGB> colores_path;
-            RGB color = RGB();
-            //#pragma omp parallel for num_threads(4) schedule(dynamic) private(colores_path,color)
             for(auto i = 0; i < num_pixeles_ejex; i++) {
 
-                colores_path = vector<RGB>();
+                RGB color = RGB();
                 for (auto k = 0; k < num_path; k++) {
                     //Path tracing
                     Vector rayo = camara.getRayo_random(i, j);
                     rayo = rayo / rayo.mod();
                     RGB color_pixel = lanzar_rayo(rayo,camara.getPosicion(),
                                                                           tmax);
-                    colores_path.push_back(color_pixel);
+                    color = color + color_pixel;
                 }
 
-                color = RGB();
-                for (RGB color_i : colores_path) {
-                    color = RGB(color.getR()+color_i.getR(),
-                    color.getG()+color_i.getG(),color.getB()+color_i.getB());
-                }
-                color = RGB(color.getR()/num_path,color.getG()/num_path,
-                            color.getB()/num_path);
-
+                color = color / num_path;
                 camara.setColor(i, j, color);
 
 

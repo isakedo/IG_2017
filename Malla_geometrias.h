@@ -28,7 +28,8 @@ public:
         triangulos = _triangulos;
     }
 
-    void cargar_triangulos_ply(const std::string& _path) {
+    void cargar_triangulos_ply(const std::string& _path, const RGB& rgb,
+            const BRDF_phong& brdf) {
 
         ifstream fe;
         char trash[64];
@@ -61,7 +62,7 @@ public:
             fe >> _num >> x >> y >> z;
             fe.getline(trash,64);
             triangulos.push_back(Triangulo(vertices[x],vertices[y],vertices[z],
-                                    RGB(163,228,215),BRDF_phong(RGB(),RGB(),0.3)));
+                                    rgb,brdf));
         }
 
         fe.close();

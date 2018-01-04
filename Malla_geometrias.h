@@ -14,6 +14,7 @@ private:
     vector<Esfera> esferas;
     vector<Plano> planos;
     vector<Triangulo> triangulos;
+    BoundingVolumeHierarchy bvh = BoundingVolumeHierarchy();
     Geometria *ultima_interseccion;
 
 public:
@@ -22,50 +23,12 @@ public:
     Malla_geometrias() = default;
 
     void cargar_geometrias(vector<Esfera>& _esferas, vector<Plano> _planos,
-            vector<Triangulo> _triangulos) {
+            vector<Triangulo> _triangulos, const BoundingVolumeHierarchy& _bvh)
+    {
         esferas = _esferas;
         planos = _planos;
         triangulos = _triangulos;
-    }
-
-    void cargar_triangulos_ply(const std::string& _path, const RGB& rgb,
-            const BRDF_phong& brdf) {
-
-        ifstream fe;
-        char trash[64];
-        int num_vertices, num_triangulos;
-        vector<Punto> vertices;
-
-        fe.open(_path);
-        fe.getline(trash,64);
-        fe.getline(trash,64);
-        fe.getline(trash,64);
-        sscanf(trash, "element vertex %d", &num_vertices);
-        fe.getline(trash,64);
-        fe.getline(trash,64);
-        fe.getline(trash,64);
-        fe.getline(trash,64);
-        sscanf(trash, "element face %d", &num_triangulos);
-        fe.getline(trash,64);
-        fe.getline(trash,64);
-
-
-        for(int it = 0; it < num_vertices; it++) {
-            float x, y, z;
-            fe >> x >> y >> z;
-            fe.getline(trash,64);
-            vertices.push_back(Punto(x,y,z));
-        }
-
-        for(int it = 0; it < num_triangulos; it++) {
-            int _num, x, y, z;
-            fe >> _num >> x >> y >> z;
-            fe.getline(trash,64);
-            triangulos.push_back(Triangulo(vertices[x],vertices[y],vertices[z],
-                                    rgb,brdf));
-        }
-
-        fe.close();
+        bvh = _bvh;
     }
 
     RGB inter_rayo(const Vector& dir, const Punto& origen, const float tmax){
@@ -101,6 +64,8 @@ public:
                 }
             }
         }
+
+
 
         return color_proximo;
     }
@@ -138,42 +103,19 @@ public:
             }
         }
 
+        float t = bvh.interseccion(dir,origen,tmax);
+        if(t > 0) {
+            if (t < t_proximo) {
+                ultima_interseccion = bvh.getUltimaInterseccion();
+                t_proximo = t;
+            }
+        }
+
         return t_proximo;
     }
 
     Geometria* geometria_intersectada() {
         return ultima_interseccion;
-    }
-
-    //Conversión de figuras completas hechas con triangulos
-    void escalar_figura(float factor_x, float factor_y, float factor_z) {
-        for(auto i = 0; i < triangulos.size(); i++) {
-            triangulos[i].escalar(factor_x,factor_y,factor_z);
-        }
-    }
-
-    void trasladar_figura(float factor_x, float factor_y, float factor_z) {
-        for(auto i = 0; i < triangulos.size(); i++) {
-            triangulos[i].trasladar(factor_x,factor_y,factor_z);
-        }
-    }
-
-    void rotar_x_figura(float angulo) {
-        for(auto i = 0; i < triangulos.size(); i++) {
-            triangulos[i].rotar_x(angulo);
-        }
-    }
-
-    void rotar_y_figura(float angulo) {
-        for(auto i = 0; i < triangulos.size(); i++) {
-            triangulos[i].rotar_y(angulo);
-        }
-    }
-
-    void rotar_z_figura(float angulo) {
-        for(auto i = 0; i < triangulos.size(); i++) {
-            triangulos[i].rotar_z(angulo);
-        }
     }
 
 };
